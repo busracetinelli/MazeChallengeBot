@@ -1,3 +1,6 @@
+using MazeChallengeBot.Adapters;
+using Microsoft.Extensions.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,7 +9,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IOpenAPIService, OpenAPIManager>();
+var con = new ConfigurationBuilder();
+con.AddJsonFile("appsettings.json");
+builder.Services.AddSingleton<IConfiguration>(provider => con.Build());
+builder.Services.AddScoped<IOpenAPIService, OpenAPIManager>();
+//httpclient 
+builder.Services.AddScoped<HttpClient>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
