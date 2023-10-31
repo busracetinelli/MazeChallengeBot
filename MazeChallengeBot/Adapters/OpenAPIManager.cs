@@ -10,15 +10,13 @@ namespace MazeChallengeBot.Adapters
 		private readonly string _apiUrl;
 		private readonly string _token;
 		private readonly HttpClient _client;
-		private string registerEndpoint = "/api/player/register";
+		private string register = "/api/player/register";
 		private string getMazes = "/api/mazes/all";
 		private string enterMaze = "/api/mazes/enter";
-		public string forgetMaze = "/api/player/forget";
+		private string forgetMaze = "/api/player/forget";
 		private string mazeMove = "/api/maze/move";
 		private string exitMaze = "/api/maze/exit";
 		private string collectScore = "/api/maze/collectScore";
-
-
 
 		public OpenAPIManager(IConfiguration configuration, HttpClient client)
 		{
@@ -27,8 +25,6 @@ namespace MazeChallengeBot.Adapters
 			client.BaseAddress = new Uri(_apiUrl);
 			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 			_client = client;
-
-
 		}
 
 		public string GetApiUrl()
@@ -43,7 +39,7 @@ namespace MazeChallengeBot.Adapters
 
 		public string GetRegisterEndpoint()
 		{
-			return registerEndpoint;
+			return register;
 		}
 
 		public string GetMazes()
@@ -87,8 +83,8 @@ namespace MazeChallengeBot.Adapters
 		public async Task<OpenAPIResponse<string>> RegisterAsync(string input)
 		{
 
-			string endUrl = $"{registerEndpoint}?name={input}"; // Register with the given name.
-			HttpResponseMessage response = await _client.PostAsync(endUrl, null);
+			string endUrl = $"{register}?name={input}"; // Register with the given name.
+			HttpResponseMessage response = await _client.PostAsync(endUrl, null); 
 			return new OpenAPIResponse<string>
 			{
 				IsSuccess = response.IsSuccessStatusCode,
