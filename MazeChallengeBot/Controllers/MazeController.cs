@@ -14,11 +14,10 @@ namespace MazeChallengeBot.Controllers
 	{
 		IOpenAPIService _openAPIService;
 		private readonly DirectionHelper _directionHelper; // Create a DirectionHelper object to use its methods.
-														   // Create a constructor to initialize the ApiQueries and DirectionHelper classes.
 		public MazeController(IOpenAPIService openAPIService)
 		{
-			_openAPIService = openAPIService;
-			_directionHelper = new DirectionHelper();
+			_openAPIService = openAPIService; // Assign the OpenAPIService object to the _openAPIService variable.
+			_directionHelper = new DirectionHelper(); // Create a DirectionHelper object to use its methods.
 		}
 
 		private int totalScore = 0; // Create an integer variable to store the total score.
@@ -29,9 +28,6 @@ namespace MazeChallengeBot.Controllers
 		{
 			using (HttpClient client = new HttpClient())
 			{
-				//client.BaseAddress = new Uri(_openAPIService.GetApiUrl()); // Set the base address.
-				//client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _openAPIService.GetToken()); // Set the token.
-
 				try
 				{
 					var responseForget = await _openAPIService.ForgetMazeAsync();// Log out of the previous session.
@@ -43,22 +39,18 @@ namespace MazeChallengeBot.Controllers
 						//string endUrl = $"{_openAPIService.GetRegisterEndpoint()}?name={input}"; // Register with the given name.
 						//HttpResponseMessage response = await client.PostAsync(endUrl, null); 
 
-						var register = await _openAPIService.RegisterAsync(input);
+						var register = await _openAPIService.RegisterAsync(input); // Register with the given name.
 
 						if (register.IsSuccess) // If the registration is successful, continue.
 						{
-							string responseBody = register.Data ?? "";
+							string responseBody = register.Data ?? ""; // If the registration is successful, continue.
 							Console.WriteLine("Register Success" + (register.Code)); // If the registration is successful, continue.
 
-							var mazesRes = await _openAPIService.GetMazesAsync();
+							var mazesRes = await _openAPIService.GetMazesAsync(); // Get all mazes.
 							if (mazesRes.IsSuccess) // If the mazes are successfully received, continue.
 							{
 								while (true) // Continue until all mazes are completed.
 								{
-									//HttpResponseMessage mazesResponse = await client.GetAsync(_openAPIService.GetApiUrl() + _openAPIService.GetMazes()); // Get all mazes.
-
-
-									//string mazesResponseBody = mazes.Data; // If the mazes are successfully received, continue.
 									List<Mazes> mazes = mazesRes.Data ?? new List<Mazes>(); // Deserialize the received mazes.
 
 									if (mazes.Count == 0) // If all mazes are completed, end the loop.
@@ -79,17 +71,15 @@ namespace MazeChallengeBot.Controllers
 									visitedMazes.Add(selectedMazeName); // Add the selected maze to the visitedMazes collection.
 
 									Console.WriteLine("Selected Maze:" + selectedMazeName); // Print the name of the selected maze.
-																							//Console.WriteLine("GetMazes Success" + (mazesRes.Code)); // Print the name of the selected maze.
 
-									//HttpResponseMessage enterMazeResponse = await client.PostAsync(_openAPIService.GetApiUrl() + _openAPIService.GetEnterMaze() + "?mazeName=" + selectedMazeName, null); // Enter the selected maze.
-									var maze = await _openAPIService.EnterMazeAsync(selectedMazeName);
+									var maze = await _openAPIService.EnterMazeAsync(selectedMazeName); // Enter the selected maze.
 									if (maze.IsSuccess && maze.Data != null) // If the maze is successfully entered, continue.
 									{
-										Console.WriteLine("Enter Maze:" + maze.Code);
-										var mazeResult = await EnterMazeAsync(maze.Data);
-										if (mazeResult != null)
+										Console.WriteLine("Enter Maze:" + maze.Code); // If the maze is successfully entered, continue.
+										var mazeResult = await EnterMazeAsync(maze.Data); // Enter the maze.
+										if (mazeResult != null) // If the maze is successfully entered, continue.
 										{
-											return mazeResult;
+											return mazeResult; // If the maze is successfully entered, return the result.
 										}
 									}
 									else
@@ -97,7 +87,6 @@ namespace MazeChallengeBot.Controllers
 										Console.WriteLine("EnterMaze Error: " + maze.Code); // If the maze is not successfully entered, print the error.
 										return StatusCode(maze.Code); // If the maze is not successfully entered, return the error.
 									}
-
 								}
 							}
 							else
@@ -139,7 +128,7 @@ namespace MazeChallengeBot.Controllers
 
 			while (!exitFound) // Continue until the exit is found.
 			{
-				var move = await _openAPIService.MazeMoveAsync(firstDirection);
+				var move = await _openAPIService.MazeMoveAsync(firstDirection); // Move in the selected direction.
 
 				if (move.IsSuccess && move.Data != null) // If the move is successful, continue.
 				{
@@ -147,8 +136,8 @@ namespace MazeChallengeBot.Controllers
 
 					if (nextResponse.canCollectScoreHere) // If there is a score to collect, collect it.
 					{
-						var collected = await _openAPIService.CollectScoreAsync();
-						if (collected.IsSuccess)
+						var collected = await _openAPIService.CollectScoreAsync(); // Collect the score.
+						if (collected.IsSuccess) // If the score is successfully collected, continue.
 						{
 							int totalScore = collected.Data?.currentScoreInBag ?? 0; // Add the score to the total score.
 							Console.WriteLine("Collected Score: " + totalScore); // Print the collected score.
@@ -179,7 +168,7 @@ namespace MazeChallengeBot.Controllers
 								}
 								if (exitFound)
 								{
-									return null;
+									return null; // If the exit is found, end the loop.
 								}
 							}
 							else
@@ -212,7 +201,7 @@ namespace MazeChallengeBot.Controllers
 			}
 			Console.WriteLine("Exit found in " + moveCount + " moves."); // Print the number of moves.
 
-			return null;
+			return null; // If the exit is found, end the loop.
 		}
 	}
 }
